@@ -37,12 +37,14 @@ public class UIMethods {
      * For details see https://docs.oracle.com/javase/7/docs/api/javax/swing/JOptionPane.html#showMessageDialog(java.awt.Component,%20java.lang.Object,%20java.lang.String,%20int,%20javax.swing.Icon)
      */
     //</editor-fold>
+    public final ImageIcon accIcon = new ImageIcon(".\\img\\ic_account_box_black_24dp.png");
     public final ImageIcon addIcon = new ImageIcon(".\\img\\ic_add_shopping_cart_black_24dp.png");
     public final ImageIcon cptIcon = new ImageIcon(".\\img\\ic_assignment_turned_in_black_24dp.png");
     public final ImageIcon delIcon = new ImageIcon(".\\img\\ic_delete_sweep_black_24dp.png");
     public final ImageIcon errIcon = new ImageIcon(".\\img\\ic_error_black_24dp.png");
     public final ImageIcon infoIcon = new ImageIcon(".\\img\\ic_info_black_24dp.png");
     public final ImageIcon markIcon = new ImageIcon(".\\img\\ic_help_black_24dp.png");
+    public final ImageIcon saveIcon = new ImageIcon(".\\img\\ic_save_black_24dp.png");
     public final ImageIcon srchIcon = new ImageIcon(".\\img\\ic_search_black_24dp.png");
     public final ImageIcon strIcon= new ImageIcon(".\\img\\ic_store_black_24dp.png");
     public final ImageIcon subIcon = new ImageIcon(".\\img\\ic_delete_forever_black_24dp.png");
@@ -347,7 +349,7 @@ public class UIMethods {
                 label.setText(DateFormat.getDateTimeInstance().format(new Date()));
             }
         });
-        timer.start();        
+        timer.start();
         return "";
     }
     
@@ -449,7 +451,8 @@ public class UIMethods {
      */
     public void checkInsert(JTextField field1, JTextField field2, JTextField field3) {
         try {
-            String id = field1.getText(), name = field2.getText();
+            String id = field1.getText();
+            String name = field2.getText();
             if (checkCorrect(field1, "Type only number!", 1) && (!checkCorrect(field2, "Enter a product name.", 0) || !Product.checkProductName(name))) {
                 if (Product.checkProductId(id)) {
                     name = Product.subProductName(id);
@@ -552,7 +555,7 @@ public class UIMethods {
             String msg3 = "Your account has been successfully logged out.\nNow you will exit the program. " + msg4;
             Object[] params = {msg1, checkBox,};
             Properties settings = new Properties();
-            settings.load(new FileInputStream("../Warehouse/settings.properties"));
+            settings.load(new FileInputStream("../Warehouse/lib/settings.properties"));
             
             /**
              * เช็คว่าใน settings.properties มีค่า Close.prompt หรือไม่
@@ -575,7 +578,7 @@ public class UIMethods {
                         //  เช็คว่าใน checkBox มีการกดเลือกหรือไม่ ถ้ามีให้เก็บค่า Close.prompt ใน settings.properties
                         if (checkBox.isSelected()) {
                             settings.put("Close.prompt", "false");
-                            settings.store(new FileOutputStream("../Warehouse/settings.properties"), "Settings Properties File");
+                            settings.store(new FileOutputStream("../Warehouse/lib/settings.properties"), "Settings Properties File");
                         }
                         logout(true);
                     } finally {

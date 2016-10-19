@@ -1,49 +1,59 @@
 package project.warehouse.driver;
 
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
+import javax.swing.filechooser.FileFilter;
 import project.warehouse.database.ConnectionBuilder;
 import project.warehouse.function.*;
 
 //  @author jirawat, edited code by B
 public class UI extends javax.swing.JFrame {
-    
-    UIMethods ctrl = new UIMethods();
-    static boolean state = false;      //  ใช้กำหนดสถานะการเข้าสู่ระบบ
-    static String temp = "", temp1 = "";   //  ใช้เก็บข้อความชั่วคราว
-    static String[] strings = new String[4];    //  ใช้เก็บข้อความแนะนำการค้นหา
-    
+
+    private final ExportFileFilter doc = new ExportFileFilter(".doc", "Microsoft Word 97–2003 Document");
+    private final ExportFileFilter docx = new ExportFileFilter(".docx", "Microsoft Word Document");
+    private final ExportFileFilter pdf = new ExportFileFilter(".pdf", "Portable Document Format");
+    private final ExportFileFilter rtf = new ExportFileFilter(".rtf", "Rich Text Format");
+    private final ExportFileFilter txt = new ExportFileFilter(".txt", "Plain Text Document");
+    private final ExportFileFilter xls = new ExportFileFilter(".xls", "Microsoft Excel 97–2003 Workbook");
+    private final ExportFileFilter xlsx = new ExportFileFilter(".xlsx", "Microsoft Excel Workbook");
+    private final UIMethods ctrl = new UIMethods();
+    private static boolean state = false;      //  ใช้กำหนดสถานะการเข้าสู่ระบบ
+    private static String temp = "", temp1 = "";   //  ใช้เก็บข้อความชั่วคราว
+    private static String[] strings = new String[4];    //  ใช้เก็บข้อความแนะนำการค้นหา
+
     //  Creates new form UI
     public UI() {
         initComponents();
     }
-    
+
     //<editor-fold defaultstate="collapsed" desc="การตั้งตั้วแปรของ UI">
     /**
-     * เปลี่ยนชื่อตัวแปรตามรูปแบบนี้
-     * camelCase [JPanel] (รวมถึง functionใดๆ [JPanel])
-     * รูปภาพ [JLabel]
-     * ข้อความ_text [JLabel]
-     * [JButton] [JPasswordField] [JTextField] ไม่มีการเปลี่ยนแปลงใดๆ
-     * ข้อความที่เป็นแบบ default คือข้อความที่เห็นก่อนที่จะกดป้อนค่าข้อความใดๆลงไป (prompt text)
+     * เปลี่ยนชื่อตัวแปรตามรูปแบบนี้ camelCase [JPanel] (รวมถึง functionใดๆ
+     * [JPanel]) รูปภาพ [JLabel] ข้อความ_text [JLabel] [JButton]
+     * [JPasswordField] [JTextField] ไม่มีการเปลี่ยนแปลงใดๆ ข้อความที่เป็นแบบ
+     * default คือข้อความที่เห็นก่อนที่จะกดป้อนค่าข้อความใดๆลงไป (prompt text)
      */
     //</editor-fold>
-    
     //<editor-fold defaultstate="collapsed" desc="Do NOT modify this code.">
     /**
      * This method is called from within the constructor to initialize the form.
@@ -55,6 +65,14 @@ public class UI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        exportTo = new javax.swing.JFileChooser(){
+            protected JDialog createDialog(Component parent) throws HeadlessException {
+                JDialog dialog = super.createDialog(parent);
+                dialog.setIconImage(ctrl.saveIcon.getImage());
+                dialog.setResizable(false);
+                return dialog;
+            }
+        };
         leftPanel = new javax.swing.JPanel();
         loginPanel = new javax.swing.JPanel();
         profile = new javax.swing.JLabel();
@@ -68,10 +86,12 @@ public class UI extends javax.swing.JFrame {
         mainSubProduct = new javax.swing.JButton();
         mainSearchProduct = new javax.swing.JButton();
         mainCheckStock = new javax.swing.JButton();
+        mainCheckUser = new javax.swing.JButton();
         addProduct = new javax.swing.JLabel();
         subProduct = new javax.swing.JLabel();
         searchProduct = new javax.swing.JLabel();
         checkStock = new javax.swing.JLabel();
+        checkUser = new javax.swing.JLabel();
         logout = new javax.swing.JButton();
         functionAddProduct = new javax.swing.JPanel();
         addProduct_text = new javax.swing.JLabel();
@@ -107,6 +127,7 @@ public class UI extends javax.swing.JFrame {
                 g.drawImage(image, x, y, this);
             }
         };
+        searchProductById = new javax.swing.JCheckBox();
         searchProductScrollPane = new javax.swing.JScrollPane();
         searchList = new javax.swing.JList<>();
         searchProductResultScrollPane = new javax.swing.JScrollPane();
@@ -114,14 +135,36 @@ public class UI extends javax.swing.JFrame {
         backSearchProduct = new javax.swing.JButton();
         functionCheckStock = new javax.swing.JPanel();
         checkStock_text = new javax.swing.JLabel();
+        checkStockById = new javax.swing.JCheckBox();
+        exportCheckStock = new javax.swing.JButton();
         checkStockScrollPane = new javax.swing.JScrollPane();
         stockTable = new javax.swing.JTable();
         backCheckStock = new javax.swing.JButton();
+        functionCheckUser = new javax.swing.JPanel();
+        checkUser_text = new javax.swing.JLabel();
+        checkUserScrollPane = new javax.swing.JScrollPane();
+        userTable = new javax.swing.JTable();
+        backCheckUser = new javax.swing.JButton();
         rightPanel = new javax.swing.JPanel();
         welcome_text = new javax.swing.JLabel();
         time_text = new javax.swing.JLabel();
         clock = new javax.swing.JLabel();
         close = new javax.swing.JLabel();
+
+        exportTo.setAcceptAllFileFilterUsed(false);
+        exportTo.setDialogType(javax.swing.JFileChooser.SAVE_DIALOG);
+        exportTo.setApproveButtonText("Save");
+        exportTo.setCurrentDirectory(null);
+        exportTo.setDialogTitle("Save As");
+        exportTo.setFileFilter(xlsx);
+        exportTo.addChoosableFileFilter(xls);
+        exportTo.addChoosableFileFilter(docx);
+        exportTo.addChoosableFileFilter(doc);
+        exportTo.addChoosableFileFilter(pdf);
+        exportTo.addChoosableFileFilter(rtf);
+        exportTo.addChoosableFileFilter(txt);
+        exportTo.setFileSelectionMode(javax.swing.JFileChooser.FILES_AND_DIRECTORIES);
+        exportTo.setPreferredSize(new java.awt.Dimension(805, 400));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Warehouse System");
@@ -211,7 +254,7 @@ public class UI extends javax.swing.JFrame {
         loginPanelLayout.setHorizontalGroup(
             loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, loginPanelLayout.createSequentialGroup()
-                .addContainerGap(76, Short.MAX_VALUE)
+                .addContainerGap(66, Short.MAX_VALUE)
                 .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(username)
                     .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -276,6 +319,22 @@ public class UI extends javax.swing.JFrame {
             }
         });
 
+        mainCheckUser.setFont(new java.awt.Font("Segoe UI Semilight", 0, 18)); // NOI18N
+        mainCheckUser.setText("Check users");
+        mainCheckUser.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                mainCheckUserMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                mainCheckUserMouseExited(evt);
+            }
+        });
+        mainCheckUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mainCheckUserActionPerformed(evt);
+            }
+        });
+
         addProduct.setIcon(ctrl.addIcon);
 
         subProduct.setIcon(ctrl.subIcon);
@@ -283,6 +342,8 @@ public class UI extends javax.swing.JFrame {
         searchProduct.setIcon(ctrl.srchIcon);
 
         checkStock.setIcon(ctrl.strIcon);
+
+        checkUser.setIcon(ctrl.accIcon);
 
         logout.setFont(new java.awt.Font("Segoe UI Semilight", 0, 18)); // NOI18N
         logout.setText("Logout");
@@ -317,14 +378,17 @@ public class UI extends javax.swing.JFrame {
                             .addComponent(mainCheckStock, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(72, 72, 72))
             .addGroup(mainMenuLayout.createSequentialGroup()
-                .addGroup(mainMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(mainMenuLayout.createSequentialGroup()
-                        .addGap(143, 143, 143)
-                        .addComponent(main_text))
-                    .addGroup(mainMenuLayout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(logout)))
+                .addGap(143, 143, 143)
+                .addComponent(main_text)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainMenuLayout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(logout)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(checkUser, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(mainCheckUser, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(23, 23, 23))
         );
         mainMenuLayout.setVerticalGroup(
             mainMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -350,7 +414,11 @@ public class UI extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(checkStock, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
-                .addComponent(logout)
+                .addGroup(mainMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(checkUser, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(mainMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(logout)
+                        .addComponent(mainCheckUser)))
                 .addGap(20, 20, 20))
         );
 
@@ -577,7 +645,7 @@ public class UI extends javax.swing.JFrame {
             }
         });
 
-        prodAmountSub.setDocument(new MaxInputLength(13));
+        prodAmountSub.setDocument(new MaxInputLength(16));
         prodAmountSub.setFont(new java.awt.Font("Segoe UI Semilight", 2, 18)); // NOI18N
         prodAmountSub.setForeground(new java.awt.Color(204, 204, 204));
         prodAmountSub.setText("Number only!");
@@ -725,6 +793,14 @@ public class UI extends javax.swing.JFrame {
             }
         });
 
+        searchProductById.setFont(new java.awt.Font("Segoe UI Semilight", 0, 18)); // NOI18N
+        searchProductById.setText("Show only my stocks");
+        searchProductById.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchProductByIdActionPerformed(evt);
+            }
+        });
+
         searchProductScrollPane.setVisible(false);
         searchProductScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         searchProductScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
@@ -808,7 +884,8 @@ public class UI extends javax.swing.JFrame {
             .addGroup(functionSearchProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(functionSearchProductLayout.createSequentialGroup()
                     .addGap(114, 114, 114)
-                    .addComponent(searchProduct_text))
+                    .addComponent(searchProduct_text)
+                    .addGap(0, 0, Short.MAX_VALUE))
                 .addGroup(functionSearchProductLayout.createSequentialGroup()
                     .addGap(21, 21, 21)
                     .addGroup(functionSearchProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -817,7 +894,10 @@ public class UI extends javax.swing.JFrame {
                             .addGroup(functionSearchProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(search, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(backSearchProduct))
-                            .addGap(0, 0, Short.MAX_VALUE)))))
+                            .addGap(0, 0, Short.MAX_VALUE))))
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, functionSearchProductLayout.createSequentialGroup()
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(searchProductById)))
             .addContainerGap(23, Short.MAX_VALUE))
         .addGroup(functionSearchProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(functionSearchProductLayout.createSequentialGroup()
@@ -835,7 +915,9 @@ public class UI extends javax.swing.JFrame {
             .addGap(18, 18, 18)
             .addComponent(searchProductResultScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGap(18, 18, Short.MAX_VALUE)
-            .addComponent(backSearchProduct)
+            .addGroup(functionSearchProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(backSearchProduct)
+                .addComponent(searchProductById))
             .addGap(20, 20, 20))
         .addGroup(functionSearchProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(functionSearchProductLayout.createSequentialGroup()
@@ -848,6 +930,23 @@ public class UI extends javax.swing.JFrame {
 
     checkStock_text.setFont(new java.awt.Font("Segoe UI Semilight", 0, 24)); // NOI18N
     checkStock_text.setText("Check stocks");
+
+    checkStockById.setFont(new java.awt.Font("Segoe UI Semilight", 0, 18)); // NOI18N
+    checkStockById.setText("Show only my stocks");
+    checkStockById.setToolTipText("");
+    checkStockById.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            checkStockByIdActionPerformed(evt);
+        }
+    });
+
+    exportCheckStock.setFont(new java.awt.Font("Segoe UI Semilight", 0, 18)); // NOI18N
+    exportCheckStock.setText("Export");
+    exportCheckStock.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            exportCheckStockActionPerformed(evt);
+        }
+    });
 
     //checkStockScrollPane.setColumnHeader(new JViewport() {
         //    @Override
@@ -887,8 +986,10 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
         stockTable.getColumnModel().getColumn(1).setPreferredWidth(250);
         stockTable.getColumnModel().getColumn(2).setResizable(false);
         stockTable.getColumnModel().getColumn(2).setPreferredWidth(110);
+        stockTable.getColumnModel().getColumn(2).setHeaderValue("Amount");
         stockTable.getColumnModel().getColumn(3).setResizable(false);
         stockTable.getColumnModel().getColumn(3).setPreferredWidth(300);
+        stockTable.getColumnModel().getColumn(3).setHeaderValue("Last modified by User ID");
     }
 
     backCheckStock.setFont(new java.awt.Font("Segoe UI Semilight", 0, 18)); // NOI18N
@@ -911,8 +1012,13 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
                 .addGroup(functionCheckStockLayout.createSequentialGroup()
                     .addGap(21, 21, 21)
                     .addGroup(functionCheckStockLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(checkStockScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
-                        .addComponent(backCheckStock))))
+                        .addComponent(checkStockScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addGroup(functionCheckStockLayout.createSequentialGroup()
+                            .addComponent(backCheckStock)
+                            .addGap(18, 18, 18)
+                            .addComponent(checkStockById, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGap(18, 18, 18)
+                            .addComponent(exportCheckStock)))))
             .addGap(23, 23, 23))
     );
     functionCheckStockLayout.setVerticalGroup(
@@ -920,14 +1026,96 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, functionCheckStockLayout.createSequentialGroup()
             .addGap(39, 39, 39)
             .addComponent(checkStock_text)
-            .addGap(60, 60, 60)
-            .addComponent(checkStockScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+            .addComponent(checkStockScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGap(18, 18, 18)
-            .addComponent(backCheckStock)
+            .addGroup(functionCheckStockLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(backCheckStock)
+                .addComponent(exportCheckStock)
+                .addComponent(checkStockById))
             .addGap(20, 20, 20))
     );
 
     leftPanel.add(functionCheckStock, "card7");
+
+    checkUser_text.setFont(new java.awt.Font("Segoe UI Semilight", 0, 24)); // NOI18N
+    checkUser_text.setText("Check users");
+
+    //checkStockScrollPane.setColumnHeader(new JViewport() {
+        //    @Override
+        //    public Dimension getPreferredSize() {
+            //        Dimension d = super.getPreferredSize();
+            //        d.height = 44;
+            //        return d;
+            //    }
+        //});
+
+userTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+userTable.getTableHeader().setFont(new Font("Segoe UI Semilight", Font.PLAIN, 24));
+userTable.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+userTable.setModel(new javax.swing.table.DefaultTableModel(
+    new Object [][] {
+
+    },
+    new String [] {
+        "User ID", "Name"
+    }
+    ) {
+        boolean[] canEdit = new boolean [] {
+            false, false
+        };
+
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return canEdit [columnIndex];
+        }
+    });
+    userTable.setRowHeight(32);
+    userTable.getTableHeader().setReorderingAllowed(false);
+    checkUserScrollPane.setViewportView(userTable);
+    if (userTable.getColumnModel().getColumnCount() > 0) {
+        userTable.getColumnModel().getColumn(0).setResizable(false);
+        userTable.getColumnModel().getColumn(0).setPreferredWidth(200);
+        userTable.getColumnModel().getColumn(1).setResizable(false);
+        userTable.getColumnModel().getColumn(1).setPreferredWidth(250);
+    }
+
+    backCheckUser.setFont(new java.awt.Font("Segoe UI Semilight", 0, 18)); // NOI18N
+    backCheckUser.setText("Back");
+    backCheckUser.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            backCheckUserActionPerformed(evt);
+        }
+    });
+
+    javax.swing.GroupLayout functionCheckUserLayout = new javax.swing.GroupLayout(functionCheckUser);
+    functionCheckUser.setLayout(functionCheckUserLayout);
+    functionCheckUserLayout.setHorizontalGroup(
+        functionCheckUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(functionCheckUserLayout.createSequentialGroup()
+            .addGroup(functionCheckUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(functionCheckUserLayout.createSequentialGroup()
+                    .addGap(141, 141, 141)
+                    .addComponent(checkUser_text))
+                .addGroup(functionCheckUserLayout.createSequentialGroup()
+                    .addGap(21, 21, 21)
+                    .addGroup(functionCheckUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(backCheckUser)
+                        .addComponent(checkUserScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE))))
+            .addContainerGap(23, Short.MAX_VALUE))
+    );
+    functionCheckUserLayout.setVerticalGroup(
+        functionCheckUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(functionCheckUserLayout.createSequentialGroup()
+            .addGap(39, 39, 39)
+            .addComponent(checkUser_text)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+            .addComponent(checkUserScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(18, 18, 18)
+            .addComponent(backCheckUser)
+            .addGap(20, 20, 20))
+    );
+
+    leftPanel.add(functionCheckUser, "card8");
 
     rightPanel.setBackground(new java.awt.Color(242, 242, 242));
     rightPanel.setOpaque(false);
@@ -1003,7 +1191,7 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
 
     pack();
     }// </editor-fold>//GEN-END:initComponents
-    
+
     //  ใช้ออกจากโปรแกรมเมื่อกดไปที่รูปภาพไอคอน โดยใช้ close(boolean bl) ใน project.warehouse.driver.UIMethods
     private void closeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_closeMouseClicked
         ctrl.close(state);
@@ -1034,7 +1222,7 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
         if (!ctrl.checkCorrect(password, "Password", 0)) {
             password.setCaretPosition(0);
         } else {
-            password.setCaretPosition(password.getText().length());
+            password.setCaretPosition(password.getPassword().length);
         }
         // TODO add your handling code here:
     }//GEN-LAST:event_passwordFocusGained
@@ -1047,7 +1235,7 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
     }//GEN-LAST:event_usernameFocusLost
 
     private void passwordFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_passwordFocusLost
-        if (password.getText().isEmpty()) {
+        if (password.getPassword().length == 0) {
             ctrl.defaultText(password, "Password");
             password.setEchoChar((char) 0);
         }
@@ -1095,12 +1283,13 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
                 PreparedStatement ps = conn.prepareStatement("SELECT USER_ID FROM ROOT.USERSYS WHERE USER_NAME=?");
                 ps.setString(1, usernameString);
                 ResultSet rs = ps.executeQuery();
-                rs.next();
-                User.setUserId(rs.getInt("USER_ID"));
-                
+                if (rs.next()) {
+                    User.setUserId(rs.getInt("USER_ID"));
+                }
                 JOptionPane.showMessageDialog(null, "Your account has been successfully logged in.", " Success", JOptionPane.INFORMATION_MESSAGE, ctrl.vusrIcon);
                 state = true;
                 ctrl.clickMainBack(leftPanel, mainMenu);
+                mainCheckUser.setText(User.getUsername());
             } else {
                 JOptionPane.showMessageDialog(null, "Oops! Incorrect username or password.", " Warning !", JOptionPane.WARNING_MESSAGE, ctrl.warnIcon);
                 username.requestFocus();
@@ -1127,10 +1316,12 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
             searchProductScrollPane.setVisible(false);
             searchList.clearSelection();
             searchProductResultScrollPane.setVisible(false);
-            SearchProduct.searchTableRowClear(searchTable);
+            searchProductById.setSelected(false);
+            checkStockById.setSelected(false);
             ctrl.defaultText(username, "Username");
             ctrl.defaultText(password, "Password");
             password.setEchoChar((char) 0);
+            User.setUserId(0);
             username.requestFocus();
         }
         // TODO add your handling code here:
@@ -1174,7 +1365,7 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
 
     private void mainCheckStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mainCheckStockActionPerformed
         ctrl.clickMainBack(leftPanel, functionCheckStock);
-        CheckStock.stockTableRowInsert(stockTable);
+        CheckStock.stockTableRowInsert(stockTable, checkStockById.isSelected());
         // TODO add your handling code here:
     }//GEN-LAST:event_mainCheckStockActionPerformed
 
@@ -1206,26 +1397,27 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
 
     // <editor-fold defaultstate="collapsed" desc="รูปแบบ events ของ prodId../prodName../prodAmount.. [JTextField]">
     /**
-     * ทั้ง prodId, prodName, prodAmount, prodIdSub, prodNameSub และ prodAmountSub [JTextField] 
-     * มี events(java.awt.event) ที่เหมือนกันคือ FocusGained และ FocusLost
-     * 
-     * ...FocusGained(FocusEvent evt)
-     * ใช้ setText(JTextField field, String message)
-     * ใน project.warehouse.driver.UIMethods
-     * 
+     * ทั้ง prodId, prodName, prodAmount, prodIdSub, prodNameSub และ
+     * prodAmountSub [JTextField] มี events(java.awt.event) ที่เหมือนกันคือ
+     * FocusGained และ FocusLost
+     *
+     * ...FocusGained(FocusEvent evt) ใช้ setText(JTextField field, String
+     * message) ใน project.warehouse.driver.UIMethods
+     *
      * ...FocusLost(FocusEvent evt)
      * เช็คว่าเมื่อกดไปยังที่ตำแหน่งอื่นๆแล้วยังมีข้อความอยู่ในนั้นหรือไม่
-     * ถ้าไม่มีก็ใช้ defaultText(JTextField field, String message)
-     * ใน project.warehouse.driver.UIMethods
-     * - เพิ่มเติมสำหรับ prodId.../prodAmount... ในส่วน else ใช้ checkLong(JTextField field) สำหรับ prodId... 
-     *   หรือ checkInt(JTextField field) สำหรับ prodAmount... กับ checkFocusLost(JTextField field, String message)
-     *   ใน project.warehouse.driver.UIMethods
-     * - เพิ่มเติมสำหรับ prodIdSub และ prodNameSub ที่จะเช็คค่าเพิ่มเติมว่า [JRadioButton] ถูกเลือกแล้วหรือไม่
-     * 
+     * ถ้าไม่มีก็ใช้ defaultText(JTextField field, String message) ใน
+     * project.warehouse.driver.UIMethods - เพิ่มเติมสำหรับ
+     * prodId.../prodAmount... ในส่วน else ใช้ checkLong(JTextField field)
+     * สำหรับ prodId... หรือ checkInt(JTextField field) สำหรับ prodAmount... กับ
+     * checkFocusLost(JTextField field, String message) ใน
+     * project.warehouse.driver.UIMethods - เพิ่มเติมสำหรับ prodIdSub และ
+     * prodNameSub ที่จะเช็คค่าเพิ่มเติมว่า [JRadioButton] ถูกเลือกแล้วหรือไม่
+     *
      * (อาจยังมี bugs หลงเหลืออยู่บ้างเล็กน้อย แต่ไม่ถึงกับต้องวิตกกังวลมากนัก)
      */
     //</editor-fold>
-    
+
     private void prodIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prodIdActionPerformed
         ctrl.checkActionPerformed(prodId, "Username", 2, prodName);
         ctrl.checkLong(prodId, prodName);
@@ -1275,6 +1467,10 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
     private void prodAmountFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_prodAmountFocusLost
         if (prodAmount.getText().isEmpty()) {
             ctrl.defaultText(prodAmount, "Type only number!");
+        } else if (!ctrl.checkSubmit(prodId, prodName, prodAmount, "Type only number!", "Enter a product name.", null, 0)) {
+            if (ctrl.checkSubmit(prodId, prodName, prodAmount, "Type only number!", "Enter a product name.", null, 3)) {
+                ctrl.reenterText(prodAmount, "Oops! Incorrect Data.");
+            }
         } else {
             ctrl.checkInt(prodAmount);
             ctrl.checkFocusLost(prodAmount, "Type only number!");
@@ -1283,9 +1479,9 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
     }//GEN-LAST:event_prodAmountFocusLost
 
     /**
-     * ตั้งค่าข้อความของ prodId, prodName และ prodAmount [JTextField] ให้เป็นแบบ default
-     * โดยใช้ defaultText(JTextField field, String message)
-     * ใน project.warehouse.driver.UIMethods
+     * ตั้งค่าข้อความของ prodId, prodName และ prodAmount [JTextField] ให้เป็นแบบ
+     * default โดยใช้ defaultText(JTextField field, String message) ใน
+     * project.warehouse.driver.UIMethods
      */
     private void clearAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearAddProductActionPerformed
         ctrl.defaultText(prodId, "Type only number!");
@@ -1300,10 +1496,16 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
             if (ctrl.checkCorrect(prodAmount, "Type only number!", 2)) {
                 ctrl.reenterText(prodAmount, "Oops! Incorrect data.");
             } else if (ctrl.checkSubmit(prodId, prodName, prodAmount, "Type only number!", "Enter a product name.", null, 0)) {
-                if (ctrl.checkSubmit(prodId, prodName, prodAmount, "Type only number!", "Enter a product name.", null, 3)) {
-                    ctrl.reenterText(prodAmount, "Oops! Blank data.");
-                } else {
+                if (!ctrl.checkSubmit(prodId, prodName, prodAmount, "Type only number!", "Enter a product name.", null, 3)) {
                     if (ctrl.checkSubmit(prodId, prodName, prodAmount, "Type only number!", "Enter a product name.", null, 1)) {
+                        prodId.requestFocus();
+                    } else if (ctrl.checkSubmit(prodId, prodName, prodAmount, "Type only number!", "Enter a product name.", null, 2)) {
+                        prodName.requestFocus();
+                    }
+                    JOptionPane.showMessageDialog(null, "Oops! Any blank data fields are not allowed.", " Warning !", JOptionPane.WARNING_MESSAGE, ctrl.warnIcon);
+                }
+                if (ctrl.checkSubmit(prodId, prodName, prodAmount, "Type only number!", "Enter a product name.", null, 3)) {
+                    if (!ctrl.checkSubmit(prodId, prodName, prodAmount, "Type only number!", "Enter a product name.", null, 1)) {
                         prodId.requestFocus();
                     } else if (ctrl.checkSubmit(prodId, prodName, prodAmount, "Type only number!", "Enter a product name.", null, 2)) {
                         prodName.requestFocus();
@@ -1316,22 +1518,32 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
                         String id = prodId.getText();
                         String name = prodName.getText();
                         String count = prodAmount.getText();
-                        String msg = "Please check the correction of these informations before we proceed.\n\n" +
-                                     "<html><b>Product ID</b><html> :" + "\n      " + id + "\n" +
-                                     "<html><b>Product name</b><html> :" + "\n      " + name + "\n" +
-                                     "<html><b>Product amount</b><html> :" + "\n      " + count + "\n\n" +
-                                     "Do you want to continue?\n";
-        
+                        String msg = "Please check the correction of these informations before we proceed.\n\n"
+                                + "<html><b>Product ID</b><html> :" + "\n      " + id + "\n"
+                                + "<html><b>Product name</b><html> :" + "\n      " + name + "\n"
+                                + "<html><b>Product amount</b><html> :" + "\n      " + count + "\n\n"
+                                + "Do you want to continue?\n";
+
                         //  ขึ้นหน้าต่างยืนยันการทำงาน โดยให้ตรวจสอบว่าข้อมูลที่ใส่เข้าไปนั้นถูกต้องหรือไม่
                         int response = JOptionPane.showConfirmDialog(null, msg, " Confirm ?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ctrl.markIcon);
                         if (response == JOptionPane.YES_OPTION) {
-                            Product.addProduct(id, name, Integer.parseInt(count));
-                            JOptionPane.showMessageDialog(null, "Your new product has been successfully added to the database.", " Success", JOptionPane.INFORMATION_MESSAGE, ctrl.cptIcon);
+                            if (Product.checkProductIdAndName(id, name)) {
+                                msg = "Do you want to add or replace with this amount?";
+                                int response1 = JOptionPane.showOptionDialog(null, msg, " Confirm ?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, ctrl.markIcon, new String[]{"Add", "Replace", "Cancel"}, "default");
+                                if (response1 == JOptionPane.YES_OPTION) {
+                                    Product.updateProduct(id, Integer.parseInt(count), true);
+                                    JOptionPane.showMessageDialog(null, "We've finished updating the amount of your product.", " Success", JOptionPane.INFORMATION_MESSAGE, ctrl.cptIcon);
+                                } else if (response1 == JOptionPane.NO_OPTION) {
+                                    Product.updateProduct(id, Integer.parseInt(count), false);
+                                    JOptionPane.showMessageDialog(null, "We've finished updating the amount of your product.", " Success", JOptionPane.INFORMATION_MESSAGE, ctrl.cptIcon);
+                                }
+                            } else {
+                                Product.addProduct(id, name, Integer.parseInt(count));
+                                JOptionPane.showMessageDialog(null, "Your new product has been successfully added to the database.", " Success", JOptionPane.INFORMATION_MESSAGE, ctrl.cptIcon);
+                            }
                             prodId.requestFocus();
                         }
                     }
-                } catch (UpdateProductAmount ex) {
-                    JOptionPane.showMessageDialog(null, "We've finished updating the amount of your product.", " Success", JOptionPane.INFORMATION_MESSAGE, ctrl.cptIcon);
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Sorry, we're unable to add your product.", " Error !!!", JOptionPane.ERROR_MESSAGE, ctrl.errIcon);
                     System.err.println("Oops!, There's an internal error.");
@@ -1406,8 +1618,8 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
     }//GEN-LAST:event_prodAmountSubFocusLost
 
     /**
-     * ตั้งค่าข้อความของ prodIdSub, prodNameSub และ prodAmountSub [JTextField] ให้เป็นแบบ default
-     * โดยใช้ defaultText(JTextField field, String message)
+     * ตั้งค่าข้อความของ prodIdSub, prodNameSub และ prodAmountSub [JTextField]
+     * ให้เป็นแบบ default โดยใช้ defaultText(JTextField field, String message)
      * ใน project.warehouse.driver.UIMethods
      */
     private void clearSubProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearSubProductActionPerformed
@@ -1424,7 +1636,7 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
                 ctrl.reenterText(prodAmountSub, "Oops! Incorrect data.");
             } else if (ctrl.checkSubmit(prodIdSub, prodNameSub, prodAmountSub, "Type only number!", "Enter a product name.", "Number only!", 5)) {
                 if (ctrl.checkSubmit(prodIdSub, prodNameSub, prodAmountSub, "Type only number!", "Enter a product name.", "Number only!", 8)) {
-                    ctrl.reenterText(prodAmountSub, "Oops! Blank data.");
+                    //ctrl.reenterText(prodAmountSub, "Oops! Blank data.");
                 } else {
                     if (ctrl.checkSubmit(prodIdSub, null, prodAmountSub, "Type only number!", null, "Number only!", 6)) {
                         prodIdSub.requestFocus();
@@ -1436,12 +1648,12 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
             } else if (ctrl.checkInt(prodAmountSub)) {
                 try {
                     String id, msg, name, count = prodAmountSub.getText();
-                    String msg0 = "Please check the correction of these informations before we proceed.\n\n" +
-                                  "<html><b>Product ID</b><html> :" + "\n      " + "[id]\n" +
-                                  "<html><b>Product name</b><html> :" + "\n      " + "[name]\n" +
-                                  "<html><b>Product amount</b><html> :" + "\n      " + count + "\n\n" +
-                                  "Do you want to continue?\n";
-            
+                    String msg0 = "Please check the correction of these informations before we proceed.\n\n"
+                            + "<html><b>Product ID</b><html> :" + "\n      " + "[id]\n"
+                            + "<html><b>Product name</b><html> :" + "\n      " + "[name]\n"
+                            + "<html><b>Product amount</b><html> :" + "\n      " + count + "\n\n"
+                            + "Do you want to continue?\n";
+
                     //  เช็คว่า field ไหนที่ทำงานได้ (กดป้อนข้อความได้)
                     if (prodIdSub.isEnabled()) {
                         if (ctrl.checkExist(prodIdSub, null, prodAmountSub)) {
@@ -1457,18 +1669,16 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
                                 }
                             }
                         }
-                    } else {
-                        if (ctrl.checkExist(null, prodNameSub, prodAmountSub)) {
-                            if (ctrl.checkSubmit(null, prodNameSub, prodAmountSub, null, "Enter a product name.", "Number only!", 10)) {
-                                name = prodNameSub.getText();
-                                id = Product.subProductId(name);    //  ดึงตัวเลขมาจากฐานข้อมูลโดยใช้ Product.subProductId(String name)
-                                msg = msg0.replace("[id]", id).replace("[name]", name);
-                                int response = JOptionPane.showConfirmDialog(null, msg, " Confirm ?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ctrl.markIcon);
-                                if (response == JOptionPane.YES_OPTION) {
-                                    Product.subProduct(id, name, Integer.parseInt(count));
-                                    JOptionPane.showMessageDialog(null, "Your product has been successfully removed from the database.", " Success", JOptionPane.INFORMATION_MESSAGE, ctrl.delIcon);
-                                    prodNameSub.requestFocus();
-                                }
+                    } else if (ctrl.checkExist(null, prodNameSub, prodAmountSub)) {
+                        if (ctrl.checkSubmit(null, prodNameSub, prodAmountSub, null, "Enter a product name.", "Number only!", 10)) {
+                            name = prodNameSub.getText();
+                            id = Product.subProductId(name);    //  ดึงตัวเลขมาจากฐานข้อมูลโดยใช้ Product.subProductId(String name)
+                            msg = msg0.replace("[id]", id).replace("[name]", name);
+                            int response = JOptionPane.showConfirmDialog(null, msg, " Confirm ?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ctrl.markIcon);
+                            if (response == JOptionPane.YES_OPTION) {
+                                Product.subProduct(id, name, Integer.parseInt(count));
+                                JOptionPane.showMessageDialog(null, "Your product has been successfully removed from the database.", " Success", JOptionPane.INFORMATION_MESSAGE, ctrl.delIcon);
+                                prodNameSub.requestFocus();
                             }
                         }
                     }
@@ -1484,7 +1694,7 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
 
     private void searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchActionPerformed
         if (ctrl.checkCorrect(search, "Search...", 0)) {
-            if (SearchProduct.searchProduct(search, searchTable)) {
+            if (SearchProduct.searchProduct(search, searchTable, searchProductById.isSelected())) {
                 searchProductResultScrollPane.setVisible(true);
                 searchProductResultScrollPane.requestFocus();
             } else {
@@ -1528,24 +1738,23 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
             ctrl.defaultText(search, "Search...");
             searchProductScrollPane.setVisible(false);
             searchProductResultScrollPane.setVisible(false);
-            SearchProduct.searchTableRowClear(searchTable);
         }
         // TODO add your handling code here:
     }//GEN-LAST:event_searchFocusLost
 
     private void searchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchKeyPressed
-        int[] keyList = {9, 10,     //  KeyEvent.VK_TAB, KeyEvent.VK_ENTER
-            16, 17, 18,     //  KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_ALT
-            19, 20,     //  KeyEvent.VK_PAUSE, KeyEvent.VK_CAPS_LOCK
-            27,     //  KeyEvent.VK_ESCAPE
-            33, 34,     //  KeyEvent.VK_PAGE_UP, KeyEvent.VK_PAGE_DOWN
-            35, 36,     //  KeyEvent.VK_END, KeyEvent.VK_HOME
-            37, 38, 39, 40,     //  KeyEvent.VK_LEFT, KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN
-            144, 145,   //  KeyEvent.VK_NUM_LOCK, KeyEvent.VK_SCROLL_LOCK
-            154, 155,   //  KeyEvent.VK_PRINTSCREEN, KeyEvent.VK_INSERT
-            112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123,    //  KeyEvent.VK_F1 - KeyEvent.VK_F12
-            224, 225, 226, 227,    //  KeyEvent.VK_KP_UP, KeyEvent.VK_KP_DOWN, KeyEvent.VK_KP_LEFT, KeyEvent.VK_KP_RIGHT
-            524, 525,   //  KeyEvent.VK_WINDOWS, KeyEvent.VK_CONTEXT_MENU
+        int[] keyList = {9, 10, //  KeyEvent.VK_TAB, KeyEvent.VK_ENTER
+            16, 17, 18, //  KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_ALT
+            19, 20, //  KeyEvent.VK_PAUSE, KeyEvent.VK_CAPS_LOCK
+            27, //  KeyEvent.VK_ESCAPE
+            33, 34, //  KeyEvent.VK_PAGE_UP, KeyEvent.VK_PAGE_DOWN
+            35, 36, //  KeyEvent.VK_END, KeyEvent.VK_HOME
+            37, 38, 39, 40, //  KeyEvent.VK_LEFT, KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN
+            144, 145, //  KeyEvent.VK_NUM_LOCK, KeyEvent.VK_SCROLL_LOCK
+            154, 155, //  KeyEvent.VK_PRINTSCREEN, KeyEvent.VK_INSERT
+            112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, //  KeyEvent.VK_F1 - KeyEvent.VK_F12
+            224, 225, 226, 227, //  KeyEvent.VK_KP_UP, KeyEvent.VK_KP_DOWN, KeyEvent.VK_KP_LEFT, KeyEvent.VK_KP_RIGHT
+            524, 525, //  KeyEvent.VK_WINDOWS, KeyEvent.VK_CONTEXT_MENU
             61440, 61441, 61442, 61443, 61444, 61445, 61446, 61447, 61448, 61449, 61450, 61451};    //  KeyEvent.VK_F13 - KeyEvent.VK_F24
         int keyPressed = evt.getKeyCode();
         boolean check = false;
@@ -1555,16 +1764,15 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
                 break;
             }
         }
-        
+
         if (!check) {
             searchProductResultScrollPane.setVisible(false);
-            SearchProduct.searchTableRowClear(searchTable);
         }
-        
+
         if (!check && (search.getText().length() > 0) && (search.getText().length() < 18) && (evt.getKeyCode() != KeyEvent.VK_BACK_SPACE)) {
             searchProductScrollPane.setVisible(true);
         }
-                
+
         if (ctrl.checkCorrect(search, "Search...", 0) && ((evt.getKeyCode() == KeyEvent.VK_UP) || (evt.getKeyCode() == KeyEvent.VK_KP_UP))) {
             evt.consume();
             temp = search.getText();
@@ -1578,11 +1786,11 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
             search.setText(searchList.getSelectedValue());
             searchList.requestFocus();
         }
-        
-        if (search.getText().isEmpty() ||
-           ((search.getText().length() == 1) && (evt.getKeyCode() == KeyEvent.VK_BACK_SPACE)) ||
-           (ctrl.checkCorrect(search, "Search...", 0) && (evt.getKeyCode() == KeyEvent.VK_ENTER))) {
-                searchProductScrollPane.setVisible(false);
+
+        if (search.getText().isEmpty()
+                || ((search.getText().length() == 1) && (evt.getKeyCode() == KeyEvent.VK_BACK_SPACE))
+                || (ctrl.checkCorrect(search, "Search...", 0) && (evt.getKeyCode() == KeyEvent.VK_ENTER))) {
+            searchProductScrollPane.setVisible(false);
         }
         // TODO add your handling code here:
     }//GEN-LAST:event_searchKeyPressed
@@ -1594,10 +1802,10 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
 
     private void searchListKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchListKeyPressed
         String[] str = new String[searchList.getModel().getSize()];
-        for(int i = 0; i < searchList.getModel().getSize(); i++) {
+        for (int i = 0; i < searchList.getModel().getSize(); i++) {
             str[i] = searchList.getModel().getElementAt(i);
         }
-        
+
         if ((evt.getKeyCode() == KeyEvent.VK_UP) || (evt.getKeyCode() == KeyEvent.VK_KP_UP)) {
             int i = searchList.getSelectedIndex() - 1;
             if (i >= 0) {
@@ -1617,7 +1825,7 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
                 searchList.clearSelection();
             }
         }
-        
+
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             search.setText(searchList.getSelectedValue());
             search.requestFocus();
@@ -1627,14 +1835,97 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
         // TODO add your handling code here:
     }//GEN-LAST:event_searchListKeyPressed
 
+    private void exportCheckStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportCheckStockActionPerformed
+        boolean done = false;
+        do {
+            if (exportTo.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                File file = exportTo.getSelectedFile();
+                FileFilter selectedFilter = exportTo.getFileFilter();
+                Object[][] model = CheckStock.dataModel(checkStockById.isSelected());
+                if (selectedFilter.equals(doc)) {
+                    if (ExportFileFilter.checkExist(file, ".doc")) {
+                        ExportFileType.exportToDoc(model, file);
+                        done = true;
+                    }
+                } else if (selectedFilter.equals(docx)) {
+                    if (ExportFileFilter.checkExist(file, ".docx")) {
+                        ExportFileType.exportToDocx(model, file);
+                        done = true;
+                    }
+                } else if (selectedFilter.equals(pdf)) {
+                    if (ExportFileFilter.checkExist(file, ".pdf")) {
+                        ExportFileType.exportToPdf(model, file);
+                        done = true;
+                    }
+                } else if (selectedFilter.equals(rtf)) {
+                    if (ExportFileFilter.checkExist(file, ".rtf")) {
+                        ExportFileType.exportToRtf(model, file);
+                        done = true;
+                    }
+                } else if (selectedFilter.equals(txt)) {
+                    if (ExportFileFilter.checkExist(file, ".txt")) {
+                        ExportFileType.exportToTxt(model, file);
+                        done = true;
+                    }
+                } else if (selectedFilter.equals(xls)) {
+                    if (ExportFileFilter.checkExist(file, ".xls")) {
+                        ExportFileType.exportToXls(model, file);
+                        done = true;
+                    }
+                } else if (selectedFilter.equals(xlsx)) {
+                    if (ExportFileFilter.checkExist(file, ".xlsx")) {
+                        ExportFileType.exportToXlsx(model, file);
+                        done = true;
+                    }
+                }
+            } else {
+                done = true;
+            }
+        } while (!done);
+        // TODO add your handling code here:
+    }//GEN-LAST:event_exportCheckStockActionPerformed
+
+    private void mainCheckUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mainCheckUserActionPerformed
+        ctrl.clickMainBack(leftPanel, functionCheckUser);
+        CheckUser.userTableRowInsert(userTable);
+        // TODO add your handling code here:
+    }//GEN-LAST:event_mainCheckUserActionPerformed
+
+    private void mainCheckUserMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mainCheckUserMouseEntered
+        mainCheckUser.setText("Check users");
+        // TODO add your handling code here:
+    }//GEN-LAST:event_mainCheckUserMouseEntered
+
+    private void mainCheckUserMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mainCheckUserMouseExited
+        mainCheckUser.setText(User.getUsername());
+        // TODO add your handling code here:
+    }//GEN-LAST:event_mainCheckUserMouseExited
+
+    private void backCheckUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backCheckUserActionPerformed
+        ctrl.clickMainBack(leftPanel, mainMenu);
+        mainCheckUser.setText(User.getUsername());
+        // TODO add your handling code here:
+    }//GEN-LAST:event_backCheckUserActionPerformed
+
+    private void checkStockByIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkStockByIdActionPerformed
+        CheckStock.stockTableRowInsert(stockTable, checkStockById.isSelected());
+        // TODO add your handling code here:
+    }//GEN-LAST:event_checkStockByIdActionPerformed
+
+    private void searchProductByIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchProductByIdActionPerformed
+        SearchProduct.searchProduct(search, searchTable, searchProductById.isSelected());
+        // TODO add your handling code here:
+    }//GEN-LAST:event_searchProductByIdActionPerformed
+
     //  @param args the command line arguments
     public static void main(String args[]) {
         // Set the look and feel
         //<editor-fold defaultstate="collapsed" desc="Look and feel setting code (optional)">
-        /** 
-         * If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */        
+        /**
+         * If Nimbus (introduced in Java SE 6) is not available, stay with the
+         * default look and feel. For details see
+         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
+         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -1653,12 +1944,12 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
             @Override
             public void run() {
                 final UI app = new UI();
-                
+
                 //  เอา subProductById และ subProductByName [JRadioButton] มาจับกลุ่มกัน ทำให้กดได้แค่เฉพาะอย่างใดอย่างหนึ่งเท่านั้น
                 ButtonGroup group = new ButtonGroup();
                 group.add(app.subProductById);
                 group.add(app.subProductByName);
-                
+
                 //  ตั้งให้เมื่อกด Close บน Title bar (รูปกากบาท, X) จะเรียกใช้งาน close(boolean bl) ใน project.warehouse.driver.UIMethods
                 app.addWindowListener(new WindowAdapter() {
                     @Override
@@ -1679,17 +1970,25 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
     private javax.swing.JLabel addProduct_text;
     private javax.swing.JButton backAddProduct;
     private javax.swing.JButton backCheckStock;
+    private javax.swing.JButton backCheckUser;
     private javax.swing.JButton backSearchProduct;
     private javax.swing.JButton backSubProduct;
     private javax.swing.JLabel checkStock;
+    private javax.swing.JCheckBox checkStockById;
     private javax.swing.JScrollPane checkStockScrollPane;
     private javax.swing.JLabel checkStock_text;
+    private javax.swing.JLabel checkUser;
+    private javax.swing.JScrollPane checkUserScrollPane;
+    private javax.swing.JLabel checkUser_text;
     private javax.swing.JButton clearAddProduct;
     private javax.swing.JButton clearSubProduct;
     private javax.swing.JLabel clock;
     private javax.swing.JLabel close;
+    private javax.swing.JButton exportCheckStock;
+    private javax.swing.JFileChooser exportTo;
     private javax.swing.JPanel functionAddProduct;
     private javax.swing.JPanel functionCheckStock;
+    private javax.swing.JPanel functionCheckUser;
     private javax.swing.JPanel functionSearchProduct;
     private javax.swing.JPanel functionSubProduct;
     private javax.swing.JPanel leftPanel;
@@ -1698,6 +1997,7 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
     private javax.swing.JButton logout;
     private javax.swing.JButton mainAddProduct;
     private javax.swing.JButton mainCheckStock;
+    private javax.swing.JButton mainCheckUser;
     private javax.swing.JPanel mainMenu;
     private javax.swing.JButton mainSearchProduct;
     private javax.swing.JButton mainSubProduct;
@@ -1719,6 +2019,7 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
     private javax.swing.JTextField search;
     private javax.swing.JList<String> searchList;
     private javax.swing.JLabel searchProduct;
+    private javax.swing.JCheckBox searchProductById;
     private javax.swing.JScrollPane searchProductResultScrollPane;
     private javax.swing.JScrollPane searchProductScrollPane;
     private javax.swing.JLabel searchProduct_text;
@@ -1731,6 +2032,7 @@ stockTable.setModel(new javax.swing.table.DefaultTableModel(
     private javax.swing.JButton submitAddProduct;
     private javax.swing.JButton submitSubProduct;
     private javax.swing.JLabel time_text;
+    private javax.swing.JTable userTable;
     private javax.swing.JTextField username;
     private javax.swing.JLabel welcome_text;
     // End of variables declaration//GEN-END:variables

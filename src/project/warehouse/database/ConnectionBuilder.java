@@ -57,7 +57,7 @@ public class ConnectionBuilder {
                 
                 //  เมธอดสำหรับใช้เริ่มต้นการเชื่อมต่อกับฐานข้อมูลด้วยวิธีที่ 2
                 Properties props = new Properties();
-                props.load(new FileInputStream("../Warehouse/settings.properties"));
+                props.load(new FileInputStream("../Warehouse/lib/settings.properties"));
                 org.apache.derby.jdbc.ClientDataSource ds = new org.apache.derby.jdbc.ClientDataSource();
                 ds.setServerName(props.getProperty("DERBY_SERVER_NAME"));
                 ds.setPortNumber(Integer.parseInt(props.getProperty("DERBY_SERVER_PORT")));
@@ -77,12 +77,12 @@ public class ConnectionBuilder {
                  * ดึงคำสั่ง SQL ที่เก็บไว้ในไฟล์ข้อความมาใช้ผ่าน statement โดยใช้
                  * read(String loc, int str, int end)
                  */
-                String cmd1 = read("../Warehouse/createTable.txt", 0, 237);
-                String cmd2 = read("../Warehouse/createTable.txt", 239, 351);
-                String cmd3 = read("../Warehouse/createTable.txt", 353, 534);
-                String cmd4 = read("../Warehouse/createTable.txt", 536, 612);
-                String cmd5 = read("../Warehouse/createTable.txt", 614, 698);
-                String cmd6 = read("../Warehouse/createTable.txt", 700, 772);
+                String cmd1 = read("../Warehouse/lib/createTable.txt", 0, 237);
+                String cmd2 = read("../Warehouse/lib/createTable.txt", 239, 351);
+                String cmd3 = read("../Warehouse/lib/createTable.txt", 353, 534);
+                String cmd4 = read("../Warehouse/lib/createTable.txt", 536, 612);
+                String cmd5 = read("../Warehouse/lib/createTable.txt", 614, 698);
+                String cmd6 = read("../Warehouse/lib/createTable.txt", 700, 772);
                 
                 if (!table1.next() || !table2.next()) {
                     stmt.execute(cmd1);     //  สร้างตาราง USERSYS
@@ -105,7 +105,7 @@ public class ConnectionBuilder {
             if (ex.getMessage().equalsIgnoreCase("java.net.ConnectException : Error connecting to server localhost" +
                 " on port 1,527 with message Connection refused: connect.")) {
                     System.err.println("Oops!, It seems that the database server is either not started or connected.");
-            } 
+            }
             //  แสดงข้อความของข้อผิดพลาดอิ่นๆนอกเหนือไปจากข้อความข้างต้น
             else {
                 System.err.println("Oops!, There's an internal error.");

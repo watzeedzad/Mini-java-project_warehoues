@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.9" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+  <NonVisualComponents>
+    <Component class="javax.swing.JFileChooser" name="exportTo">
+      <Properties>
+        <Property name="acceptAllFileFilterUsed" type="boolean" value="false"/>
+        <Property name="dialogType" type="int" value="1"/>
+        <Property name="approveButtonText" type="java.lang.String" value="Save"/>
+        <Property name="currentDirectory" type="java.io.File" value="null"/>
+        <Property name="dialogTitle" type="java.lang.String" value="Save As"/>
+        <Property name="fileFilter" type="javax.swing.filechooser.FileFilter" editor="org.netbeans.modules.form.RADConnectionPropertyEditor" postCode="exportTo.addChoosableFileFilter(xls);&#xa;exportTo.addChoosableFileFilter(docx);&#xa;exportTo.addChoosableFileFilter(doc);&#xa;exportTo.addChoosableFileFilter(pdf);&#xa;exportTo.addChoosableFileFilter(rtf);&#xa;exportTo.addChoosableFileFilter(txt);">
+          <Connection code="xlsx" type="code"/>
+        </Property>
+        <Property name="fileSelectionMode" type="int" value="2"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[805, 400]"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JFileChooser(){&#xa;    protected JDialog createDialog(Component parent) throws HeadlessException {&#xa;        JDialog dialog = super.createDialog(parent);&#xa;        dialog.setIconImage(ctrl.saveIcon.getImage());&#xa;        dialog.setResizable(false);&#xa;        return dialog;&#xa;    }&#xa;}"/>
+      </AuxValues>
+    </Component>
+  </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="0"/>
     <Property name="title" type="java.lang.String" value="Warehouse System"/>
@@ -67,7 +88,7 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace pref="76" max="32767" attributes="0"/>
+                      <EmptySpace pref="66" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="username" max="32767" attributes="0"/>
                           <Component id="password" min="-2" pref="254" max="-2" attributes="0"/>
@@ -231,17 +252,18 @@
                       <EmptySpace min="-2" pref="72" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
-                              <EmptySpace min="-2" pref="143" max="-2" attributes="0"/>
-                              <Component id="main_text" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
-                              <Component id="logout" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                      </Group>
+                      <EmptySpace min="-2" pref="143" max="-2" attributes="0"/>
+                      <Component id="main_text" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                      <Component id="logout" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="checkUser" min="-2" pref="33" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="mainCheckUser" min="-2" pref="123" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -274,7 +296,13 @@
                           </Group>
                       </Group>
                       <EmptySpace pref="74" max="32767" attributes="0"/>
-                      <Component id="logout" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="checkUser" min="-2" pref="33" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="logout" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="mainCheckUser" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
                       <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -333,6 +361,19 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mainCheckStockActionPerformed"/>
               </Events>
             </Component>
+            <Component class="javax.swing.JButton" name="mainCheckUser">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI Semilight" size="18" style="0"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Check users"/>
+              </Properties>
+              <Events>
+                <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="mainCheckUserMouseEntered"/>
+                <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="mainCheckUserMouseExited"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mainCheckUserActionPerformed"/>
+              </Events>
+            </Component>
             <Component class="javax.swing.JLabel" name="addProduct">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
@@ -358,6 +399,13 @@
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="ctrl.strIcon" type="code"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="checkUser">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="ctrl.accIcon" type="code"/>
                 </Property>
               </Properties>
             </Component>
@@ -738,7 +786,7 @@
             <Component class="javax.swing.JTextField" name="prodAmountSub">
               <Properties>
                 <Property name="document" type="javax.swing.text.Document" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new MaxInputLength(13)" type="code"/>
+                  <Connection code="new MaxInputLength(16)" type="code"/>
                 </Property>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Segoe UI Semilight" size="18" style="2"/>
@@ -814,6 +862,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="114" max="-2" attributes="0"/>
                               <Component id="searchProduct_text" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
@@ -827,6 +876,10 @@
                                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="searchProductById" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace pref="23" max="32767" attributes="0"/>
@@ -850,7 +903,10 @@
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="searchProductResultScrollPane" min="-2" pref="250" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="32767" attributes="0"/>
-                      <Component id="backSearchProduct" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="backSearchProduct" min="-2" max="-2" attributes="0"/>
+                          <Component id="searchProductById" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                   </Group>
                   <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
@@ -900,6 +956,17 @@
                 <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTextField() {&#xa;    protected void paintComponent(Graphics g) {&#xa;        super.paintComponent(g);&#xa;        int y = (getHeight() - image.getHeight())/2;&#xa;        g.drawImage(image, x, y, this);&#xa;    }&#xa;}"/>
                 <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="Border border = UIManager.getBorder(&quot;TextField.border&quot;);&#xa;final BufferedImage image = ctrl.imgRead(&quot;../Warehouse/img/ic_search_black_24dp_1x.png&quot;);&#xa;final int x = border.getBorderInsets(new javax.swing.JTextField()).left;"/>
               </AuxValues>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="searchProductById">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI Semilight" size="18" style="0"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Show only my stocks"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="searchProductByIdActionPerformed"/>
+              </Events>
             </Component>
             <Container class="javax.swing.JScrollPane" name="searchProductScrollPane">
               <Properties>
@@ -1030,8 +1097,14 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="checkStockScrollPane" alignment="0" pref="366" max="32767" attributes="0"/>
-                                  <Component id="backCheckStock" min="-2" max="-2" attributes="0"/>
+                                  <Component id="checkStockScrollPane" pref="0" max="32767" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Component id="backCheckStock" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Component id="checkStockById" max="32767" attributes="0"/>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Component id="exportCheckStock" min="-2" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                           </Group>
                       </Group>
@@ -1044,10 +1117,14 @@
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
                       <Component id="checkStock_text" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
-                      <Component id="checkStockScrollPane" pref="298" max="32767" attributes="0"/>
+                      <EmptySpace pref="33" max="32767" attributes="0"/>
+                      <Component id="checkStockScrollPane" min="-2" pref="325" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="backCheckStock" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="backCheckStock" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="exportCheckStock" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="checkStockById" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -1061,6 +1138,29 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Check stocks"/>
               </Properties>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="checkStockById">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI Semilight" size="18" style="0"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Show only my stocks"/>
+                <Property name="toolTipText" type="java.lang.String" value=""/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkStockByIdActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="exportCheckStock">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI Semilight" size="18" style="0"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Export"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportCheckStockActionPerformed"/>
+              </Events>
             </Component>
             <Container class="javax.swing.JScrollPane" name="checkStockScrollPane">
               <AuxValues>
@@ -1096,12 +1196,12 @@
                           <Renderer/>
                         </Column>
                         <Column maxWidth="-1" minWidth="-1" prefWidth="110" resizable="false">
-                          <Title/>
+                          <Title value="Amount"/>
                           <Editor/>
                           <Renderer/>
                         </Column>
                         <Column maxWidth="-1" minWidth="-1" prefWidth="300" resizable="false">
-                          <Title/>
+                          <Title value="Last modified by User ID"/>
                           <Editor/>
                           <Renderer/>
                         </Column>
@@ -1124,6 +1224,114 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="backCheckStockActionPerformed"/>
+              </Events>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Container class="javax.swing.JPanel" name="functionCheckUser">
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+              <CardConstraints cardName="card8"/>
+            </Constraint>
+          </Constraints>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace min="-2" pref="141" max="-2" attributes="0"/>
+                              <Component id="checkUser_text" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="backCheckUser" min="-2" max="-2" attributes="0"/>
+                                  <Component id="checkUserScrollPane" min="-2" pref="366" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                      </Group>
+                      <EmptySpace pref="23" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
+                      <Component id="checkUser_text" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="33" max="32767" attributes="0"/>
+                      <Component id="checkUserScrollPane" min="-2" pref="325" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="backCheckUser" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JLabel" name="checkUser_text">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI Semilight" size="24" style="0"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Check users"/>
+              </Properties>
+            </Component>
+            <Container class="javax.swing.JScrollPane" name="checkUserScrollPane">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="//checkStockScrollPane.setColumnHeader(new JViewport() {&#xa;//    @Override&#xa;//    public Dimension getPreferredSize() {&#xa;//        Dimension d = super.getPreferredSize();&#xa;//        d.height = 44;&#xa;//        return d;&#xa;//    }&#xa;//});"/>
+                <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+              </AuxValues>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+              <SubComponents>
+                <Component class="javax.swing.JTable" name="userTable">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Segoe UI" size="18" style="0"/>
+                    </Property>
+                    <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                      <Table columnCount="2" rowCount="0">
+                        <Column editable="false" title="User ID" type="java.lang.Object"/>
+                        <Column editable="false" title="Name" type="java.lang.Object"/>
+                      </Table>
+                    </Property>
+                    <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
+                      <TableColumnModel selectionModel="0">
+                        <Column maxWidth="-1" minWidth="-1" prefWidth="200" resizable="false">
+                          <Title/>
+                          <Editor/>
+                          <Renderer/>
+                        </Column>
+                        <Column maxWidth="-1" minWidth="-1" prefWidth="250" resizable="false">
+                          <Title/>
+                          <Editor/>
+                          <Renderer/>
+                        </Column>
+                      </TableColumnModel>
+                    </Property>
+                    <Property name="rowHeight" type="int" value="32"/>
+                    <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
+                      <TableHeader reorderingAllowed="false" resizingAllowed="true"/>
+                    </Property>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="userTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);&#xa;userTable.getTableHeader().setFont(new Font(&quot;Segoe UI Semilight&quot;, Font.PLAIN, 24));"/>
+                  </AuxValues>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Component class="javax.swing.JButton" name="backCheckUser">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI Semilight" size="18" style="0"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Back"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="backCheckUserActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>

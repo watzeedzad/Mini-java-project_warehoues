@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
+import java.util.TreeSet;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
@@ -33,9 +33,9 @@ public class SearchProduct {
      * - searchProduct(JTextField field, JTable table)
      * )
      */
-    private static ArrayList<String> searchProduct(String str) {
-        ArrayList<String> myArrList = new ArrayList<String>();
-        ArrayList<String> id = new ArrayList<String>();
+    private static ArrayList<String> searchProduct(String str, boolean bl) {
+        ArrayList<String> id, myArrList = new ArrayList<String>();
+        TreeSet<String> temp = new TreeSet<String>();
         try {
             Connection conn = ConnectionBuilder.getConnection();
             PreparedStatement ps;
@@ -44,28 +44,58 @@ public class SearchProduct {
             UIMethods ctrl = new UIMethods();
             if (ctrl.containsOnlyNumbers(str) && Product.checkProductId(str)) {
                 stmt = stmt0 + "WHERE PRODUCT_ID=?";
-                ps = conn.prepareStatement(stmt);
-                ps.setString(1, str);
+                if (bl) {
+                    stmt += " AND REF_USER_ID=?";
+                    ps = conn.prepareStatement(stmt);
+                    ps.setString(1, str);
+                    ps.setInt(2, User.getUserId());
+                } else {
+                    ps = conn.prepareStatement(stmt);
+                    ps.setString(1, str);
+                }
             } else if (Product.checkProductName(str)) {
                 stmt = stmt0 + "WHERE PRODUCT_NAME=?";
-                ps = conn.prepareStatement(stmt);
-                ps.setString(1, str);
-            } else {
-                stmt = stmt0 + "WHERE PRODUCT_NAME LIKE ?";
-                ps = conn.prepareStatement(stmt);
-                ps.setString(1, "%" + str + "%");
-                if (ctrl.containsOnlyNumbers(str)) {
-                    stmt = stmt + " OR PRODUCT_ID LIKE ?";
+                if (bl) {
+                    stmt += " AND REF_USER_ID=?";
                     ps = conn.prepareStatement(stmt);
-                    ps.setString(1, "%" + str + "%");
-                    ps.setString(2, "%" + str + "%");
+                    ps.setString(1, str);
+                    ps.setInt(2, User.getUserId());
+                } else {
+                    ps = conn.prepareStatement(stmt);
+                    ps.setString(1, str);
+                }
+            } else {
+                if (ctrl.containsOnlyNumbers(str)) {
+                    if (bl) {
+                        stmt = stmt0 + "WHERE REF_USER_ID=? AND (PRODUCT_NAME LIKE ? OR PRODUCT_ID LIKE ?)";
+                        ps = conn.prepareStatement(stmt);
+                        ps.setInt(1, User.getUserId());
+                        ps.setString(2, "%" + str + "%");
+                        ps.setString(3, "%" + str + "%");
+                    } else {
+                        stmt = stmt0 + "WHERE PRODUCT_NAME LIKE ? OR PRODUCT_ID LIKE ?";
+                        ps = conn.prepareStatement(stmt);
+                        ps.setString(1, "%" + str + "%");
+                        ps.setString(2, "%" + str + "%");
+                    }
+                } else {
+                    stmt = stmt0 + "WHERE PRODUCT_NAME LIKE ?";
+                    if (bl) {
+                        stmt += " AND REF_USER_ID=?";
+                        ps = conn.prepareStatement(stmt);
+                        ps.setString(1, "%" + str + "%");
+                        ps.setInt(2, User.getUserId());
+                    } else {
+                        ps = conn.prepareStatement(stmt);
+                        ps.setString(1, "%" + str + "%");
+                    }
                 }
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
-                    id.add(rs.getString("PRODUCT_ID"));
+                    temp.add(rs.getString("PRODUCT_ID"));
                 }
-                Collections.sort(id, new StringComparator());
-                searchRelate(id, myArrList);
+                id = new ArrayList<String>(temp);
+                searchRelate(id, myArrList, bl);
                 return myArrList;
             }
             ResultSet rs = ps.executeQuery();
@@ -83,16 +113,28 @@ public class SearchProduct {
     }
     
     //  เมธอดภายในสำหรับดึงข้อมูลมาจากฐานข้อมูลตรงตามตัวเลขทุกตัวที่เก็บเอาไว้
-    private static ArrayList<String> searchRelate(ArrayList<String> in, ArrayList<String> out) {
+    private static ArrayList<String> searchRelate(ArrayList<String> in, ArrayList<String> out, boolean bl) {
         try {
             Connection conn = ConnectionBuilder.getConnection();
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM ROOT.STOCK " +
+            String stmt, stmt0 = "SELECT * FROM ROOT.STOCK " +
                 "JOIN ROOT.PRODUCT ON STOCK.STOCK_PRODUCT_ID=PRODUCT.PRODUCT_ID " +
-                "WHERE STOCK_PRODUCT_ID=?");
+                "WHERE STOCK_PRODUCT_ID=?";
+            if (bl) {
+                stmt = stmt0 + " AND REF_USER_ID=?";
+            } else {
+                stmt = stmt0;
+            }
+            PreparedStatement ps = conn.prepareStatement(stmt, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             for (int i = 0; i < in.size(); i++) {
-                ps.setString(1, in.get(i));
+                if (bl) {
+                    ps.setString(1, in.get(i));
+                    ps.setInt(2, User.getUserId());
+                } else {
+                    ps.setString(1, in.get(i));
+                }
                 ResultSet rs = ps.executeQuery();
-                if (rs.next()) {
+                rs.afterLast();
+                while (rs.previous()) {
                     out.add(rs.getString("STOCK_PRODUCT_ID"));
                     out.add(rs.getString("PRODUCT_NAME"));
                     out.add(String.valueOf(rs.getInt("STOCK_PRODUCT_AMOUNT")));
@@ -101,7 +143,7 @@ public class SearchProduct {
             }
         } catch (SQLException ex) {
             System.err.println("Oops!, There's an internal error.");
-            ex.printStackTrace();  
+            ex.printStackTrace();
         }
         return out;
     }
@@ -156,11 +198,11 @@ public class SearchProduct {
      * เมธอดภายในสำหรับเก็บข้อมูลที่ได้จาก searchProduct(String str) ไว้ในรูปแบบของ Object[][] (array สองมิติของ Object)
      * (นำมาใช้กับ searchTableRowInsert(String str, JTable table))
      */
-    private static Object[][] dataModel(String str) {
-        Object[] data = searchProduct(str).toArray();
-        Object[][] model = new Object[searchProduct(str).size()/4][4];
-        for (int c = 0; c < searchProduct(str).size(); c++)
-            for (int a = 0; a < searchProduct(str).size()/4; a++) {
+    private static Object[][] dataModel(String str, boolean bl) {
+        Object[] data = searchProduct(str, bl).toArray();
+        Object[][] model = new Object[searchProduct(str, bl).size()/4][4];
+        for (int c = 0; c < searchProduct(str, bl).size(); c++)
+            for (int a = 0; a < searchProduct(str, bl).size()/4; a++) {
                 for (int b = 0; b < 4; b++) {
                     model[a][b] = data[c++];
             }
@@ -172,29 +214,19 @@ public class SearchProduct {
      * เมธอดภายในสำหรับใส่ค่าที่ได้จาก dataModel(String str) ลงในรูปแบบแถวๆหนึ่งของ [JTable] ใดๆ
      * (นำมาใช้กับ searchProduct(JTextField field, JTable table))
      */
-    private static void searchTableRowInsert(String str, JTable table) {
-        Object[][] model = dataModel(str);
+    private static void searchTableRowInsert(String str, JTable table, boolean bl) {
+        Object[][] model = dataModel(str, bl);
         DefaultTableModel dtm = (DefaultTableModel) table.getModel();
-        for (int a = dtm.getRowCount(); a < searchProduct(str).size()/4; a++) {
+        while (dtm.getRowCount() > 0) {
+            for (int i = 0; i < dtm.getRowCount(); i++) {
+                dtm.removeRow(i);
+            }
+        }
+        for (int a = 0; a < searchProduct(str, bl).size()/4; a++) {
             dtm.addRow(new Object[]{model[a][0], model[a][1], model[a][2], model[a][3]});
         }
     }
-    
-    /**
-     * เมธอดสำหรับล้างรูปแบบแถวของ [JTable] ใดๆออกทั้งหมด
-     * (นำมาใช้กับ
-     * - logoutActionPerformed(ActionEvent evt)
-     * - searchFocusLost(FocusEvent evt)
-     * - searchKeyPressed(KeyEvent evt)
-     * )
-     */
-    public static void searchTableRowClear(JTable table) {
-        DefaultTableModel dtm = (DefaultTableModel) table.getModel();
-        for (int i = 0; i < dtm.getRowCount(); i++) {
-            dtm.removeRow(i);
-        }
-    }
-    
+
     /**
      * เมธอดสำหรับเก็บข้อมูลที่ได้จาก searchProduct...(String str) ไว้ในรูปแบบของ String[] (array ของ String)
      * โดยจะเช็คข้อความว่าจะผ่านเงื่อนไขของ containsOnlyNumbers(String str) ใน project.warehouse.driver.UIMethods
@@ -202,10 +234,17 @@ public class SearchProduct {
      * (นำมาใช้กับ searchCaretUpdate(CaretEvent evt))
      */
     public static String[] searchListInsert(String text) {
-        List<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<String>();
         String[] data = new String[4];
         UIMethods ctrl = new UIMethods();
-        if (ctrl.containsOnlyNumbers(text)) {
+        
+        if (text.length() == 1) {
+            if (ctrl.containsOnlyNumbers(text)) {
+                data = Arrays.copyOf(searchProductId(text).toArray(), 4, String[].class);
+            } else {
+                data = Arrays.copyOf(searchProductName(text).toArray(), 4, String[].class);
+            }
+        } else {
             for (int i = 0; i < 4; i++) {
                 String[] name = Arrays.copyOf(searchProductName(text).toArray(), 2, String[].class);
                 String[] id = Arrays.copyOf(searchProductId(text).toArray(), 2, String[].class);
@@ -215,16 +254,11 @@ public class SearchProduct {
                     data[i] = id[i-2];
                 }
             }
-            if (data[0] == null || data[1] == null) {
-                data = Arrays.copyOf(searchProductId(text).toArray(), 4, String[].class);
-            }
-        } else {
-            data = Arrays.copyOf(searchProductName(text).toArray(), 4, String[].class);
         }
         
         //  เอาข้อมูลที่เป็นข้อความว่าง ("") หรือ null ออก
-        for(String str : data) {
-            if(str != null && str.length() > 0) {
+        for (String str : data) {
+            if (str != null && str.length() > 0) {
                 list.add(str);
             }
         }
@@ -237,11 +271,11 @@ public class SearchProduct {
      * ถ้ามีก็ใช้ searchTableRowInsert(String str, JTable table) ใส่ค่าที่มีลงใน [JTable] ใดๆ
      * (นำมาใช้กับ searchActionPerformed(ActionEvent evt))
      */
-    public static boolean searchProduct(JTextField field, JTable table) {
+    public static boolean searchProduct(JTextField field, JTable table, boolean bl) {
         String text = field.getText();
-        ArrayList<String> data = searchProduct(text);
+        ArrayList<String> data = searchProduct(text, bl);
         if (!data.isEmpty()) {
-            searchTableRowInsert(text, table);
+            searchTableRowInsert(text, table, bl);
             return true;
         }
         return false;

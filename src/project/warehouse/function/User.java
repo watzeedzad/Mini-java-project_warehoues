@@ -10,7 +10,7 @@ import project.warehouse.database.ConnectionBuilder;
 public class User {
     
     private String password;
-    private String username;
+    private static String username;
     private static int userId = 0;
 
     public String getPassword() {
@@ -21,12 +21,12 @@ public class User {
         this.password = password;
     }
     
-    public String getUsername() {
+    public static String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public static void setUsername(String username) {
+        User.username = username;
     }
     
     public static int getUserId() {
@@ -47,7 +47,8 @@ public class User {
         ps1.setString(1, username);
         ResultSet rs1 = ps1.executeQuery();
         while (rs1.next()) {
-            userId = rs1.getInt("USER_ID");
+            User.username = rs1.getString("USER_NAME");
+            User.userId = rs1.getInt("USER_ID");
         }
         return rs.next();
     }
